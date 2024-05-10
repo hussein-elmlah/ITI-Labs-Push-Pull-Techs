@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Text File using XMLHttpRequest</title>
+</head>
+<body>
+    <h2>Read Text File Line by Line</h2>
+    <button onclick="readTextFile()">Read File</button>
+    <div id="output"></div>
+
+    <script>
+        function readTextFile() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var allText = xhr.responseText;
+                        displayText(allText);
+                    } else {
+                        console.error('Failed to load the file.');
+                    }
+                }
+            };
+            xhr.open('GET', 'http://localhost:3000/products');
+            xhr.send();
+        }
+
+        function displayText(text) {
+            var outputDiv = document.getElementById('output');
+            outputDiv.textContent = text;
+        }
+    </script>
+</body>
+</html>
