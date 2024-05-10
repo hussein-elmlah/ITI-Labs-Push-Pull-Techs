@@ -11,7 +11,7 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <h2 class="text-center mb-4">Read Text File Line by Line</h2>
+                <h2 class="text-center mb-4">jQuery AJAX</h2>
                 <button id="readFileButton" class="btn btn-primary btn-block mb-3">Read File</button>
                 <div id="output" class="p-4 border rounded bg-white"></div>
             </div>
@@ -23,7 +23,7 @@
         $(document).ready(function() {
             $("#readFileButton").click(function() {
                 $.ajax({
-                    url: "http://localhost:3000/products", // Replace with your file URL
+                    url: "http://localhost:3000/products",
                     method: "GET",
                     dataType: "text",
                     success: function(data) {

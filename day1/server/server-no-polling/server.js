@@ -27,7 +27,6 @@ app.get('/', (req, res) => {
 });
 
 app.get('/products', (req, res) => {
-    // Execute a SQL query to retrieve data from the 'products' table
     connection.query('SELECT * FROM products', (err, results) => {
         if (err) {
             console.error('Error executing SQL query:', err);
