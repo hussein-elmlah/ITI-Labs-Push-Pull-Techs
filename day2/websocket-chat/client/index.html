@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Chat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container">
+    <h1>WebSocket Chat</h1>
+
+    <div id="username-prompt" class="mb-3">
+      <p>Enter your username:</p>
+      <input type="text" id="username-input" placeholder="Username" class="form-control">
+      <button id="join-button" class="btn btn-primary my-2">Join Chat</button>
+    </div>
+
+    <div id="chat-container" class="chat-container border rounded p-3 ">
+      <div id="chat-messages"></div>
+    </div>
+
+    <div id="message-section" class="input-container d-flex d-none">
+      <input type="text" id="message-input" placeholder="Enter your message" class="form-control flex-grow-1">
+      <button id="send-button" class="btn btn-primary">Send</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    const usernamePrompt = document.getElementById('username-prompt');
+    const usernameInput = document.getElementById('username-input');
+    const joinButton = document.getElementById('join-button');
+    const chatContainer = document.getElementById('chat-container');
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const messageSection = document.getElementById('message-section');
+
+    let username;
+    let ws;
+
+    joinButton.addEventListener('click', () => {
+      username = usernameInput.value.trim();
+      if (username) {
+        usernamePrompt.style.display = 'none';
+        chatContainer.style.display = 'block';
+        chatMessages.style.display = 'block';
+        messageSection.classList.remove('d-none');
+
+        ws = new WebSocket(`ws://localhost:${8080}`);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ type: 'login', username }));
+        };
+
+        // Handle message sending
+        sendButton.addEventListener('click', () => {
+          const message = messageInput.value.trim();
+          if (message) {
+            ws.send(JSON.stringify({ type: 'message', username , content: message}));
+            messageInput.value = '';
+          }
+        });
+
+        // Handle message receiving
+        ws.onmessage = (event) => {
+          console.log(` message: ${event.data}`);
+
+          const data = JSON.parse(event.data);
+          if (data.type === 'message') {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = `${data.username}: ${data.content}`;
+            console.log(`Received message: ${messageElement.textContent}`);
+            chatMessages.appendChild(messageElement);
+          }
+        };
+      } else {
+        alert('Please enter a username');
+      }
+    });
+  </script>
+</body>
+</html>
